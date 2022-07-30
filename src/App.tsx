@@ -58,6 +58,8 @@ function App() {
   const handleClear = (e: any) => {
     e.preventDefault();
     fetchPulbicRepos();
+    setForcePage(1);
+    changePage({ selected: 0 });
     setUsername("");
     setUrl("");
     setIsSearch(false);
