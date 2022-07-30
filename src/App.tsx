@@ -7,9 +7,6 @@ import CardUser from "./components/CardUser";
 
 function App() {
   const [username, setUsername] = useState<string>("");
-  const [url, setUrl] = useState<string>(
-    `https://api.github.com/users/${username}/repos?per_page=100`
-  );
   const [repos, setRepos] = useState<any[]>([]);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [forcePage, setForcePage] = useState<number>(1);
@@ -61,7 +58,6 @@ function App() {
     setForcePage(1);
     changePage({ selected: 0 });
     setUsername("");
-    setUrl("");
     setIsSearch(false);
   };
 
