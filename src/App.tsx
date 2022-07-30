@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import ReactPaginate from "react-paginate";
 import "./App.css";
 import Card from "./components/Card";
 
@@ -11,6 +12,13 @@ function App() {
 
   const usersPerPage: number = 10;
   const pagesVisited: number = pageNumber * usersPerPage;
+
+  const pageCount: number = Math.ceil(repos.length / usersPerPage);
+
+  const changePage = ({ selected }: { selected: number }) => {
+    setForcePage(selected);
+    setPageNumber(selected);
+  };
 
   const displayPublicRepos: any = repos
     .slice(pagesVisited, pagesVisited + usersPerPage)
@@ -44,6 +52,18 @@ function App() {
         <h1>Listing Github Repos APP</h1>
       </div>
       {displayPublicRepos}
+      <ReactPaginate
+        forcePage={forcePage}
+        breakLabel=".."
+        previousLabel={"<"}
+        nextLabel={">"}
+        pageCount={pageCount}
+        onPageChange={changePage}
+        containerClassName={"pg-btn"}
+        activeClassName="pg-active"
+        disabledClassName="pg-disable"
+        marginPagesDisplayed={4}
+      />
     </div>
   );
 }
