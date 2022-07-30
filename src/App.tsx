@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import "./App.css";
 import Card from "./components/Card";
+import CardUser from "./components/CardUser";
 
 function App() {
   const [username, setUsername] = useState<string>("");
@@ -13,6 +14,8 @@ function App() {
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [forcePage, setForcePage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const [isSearch, setIsSearch] = useState<boolean>(false);
 
   const usersPerPage: number = 10;
   const pagesVisited: number = pageNumber * usersPerPage;
@@ -34,20 +37,34 @@ function App() {
       );
     });
 
-  const handleSubmit = (e: any) => {
+  const displayUsers: any = repos
+    .slice(pagesVisited, pagesVisited + usersPerPage)
+    .map((repo: any, index: number) => {
+      return (
+        <div key={index}>
+          <CardUser repo={repo} />
+        </div>
+      );
+    });
+
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    fetchRepos();
+    await fetchRepos();
     setForcePage(1);
     changePage({ selected: 0 });
+    setIsSearch(true);
   };
 
   const handleClear = (e: any) => {
     e.preventDefault();
+    fetchPulbicRepos();
     setUsername("");
     setUrl("");
+    setIsSearch(false);
   };
 
   const fetchPulbicRepos = async () => {
+    setIsLoading(true);
     await axios
       .get("https://api.github.com/repositories")
       .then((res) => {
@@ -56,10 +73,14 @@ function App() {
       })
       .catch((err) => {
         console.error(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
   const fetchRepos = async () => {
+    setIsLoading(true);
     await axios
       .get(`https://api.github.com/users/${username}/repos?per_page=100`)
       .then((res) => {
@@ -68,6 +89,9 @@ function App() {
       })
       .catch((err) => {
         console.error(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -89,7 +113,11 @@ function App() {
             placeholder="Ex. Karn-P, microsoft, facebook "
             onChange={(e) => setUsername(e.target.value)}
           />
-          <button className="search-btn" onClick={handleSubmit}>
+          <button
+            disabled={!!!username}
+            className="search-btn"
+            onClick={handleSubmit}
+          >
             {isLoading ? "Searching..." : "Search"}
           </button>
           <button className="clear-btn" onClick={handleClear}>
@@ -97,19 +125,22 @@ function App() {
           </button>
         </div>
       </form>
-      <div className="flex-box">{displayPublicRepos}</div>
-      <ReactPaginate
-        forcePage={forcePage}
-        breakLabel=".."
-        previousLabel={"<"}
-        nextLabel={">"}
-        pageCount={pageCount}
-        onPageChange={changePage}
-        containerClassName={"pg-btn"}
-        activeClassName="pg-active"
-        disabledClassName="pg-disable"
-        marginPagesDisplayed={4}
-      />
+      {!isSearch && <div className="flex-box">{displayPublicRepos}</div>}
+      {isSearch && <div className="flex-box">{displayUsers}</div>}
+      {
+        <ReactPaginate
+          forcePage={forcePage}
+          breakLabel=".."
+          previousLabel={"<"}
+          nextLabel={">"}
+          pageCount={pageCount}
+          onPageChange={changePage}
+          containerClassName={"pg-btn"}
+          activeClassName="pg-active"
+          disabledClassName="pg-disable"
+          marginPagesDisplayed={4}
+        />
+      }
     </div>
   );
 }

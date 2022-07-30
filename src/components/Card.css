@@ -59,3 +59,27 @@
   line-clamp: 2;
   color: #4e5c6f;
 }
+
+.sub-detail {
+  display: flex;
+  gap: 1rem;
+}
+
+.topics-span {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.topic-tag {
+  padding: 4px 8px;
+  border: 1px solid #e5eaed;
+  border-radius: 50px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #788697;
+}
+.topic-tag:hover {
+  background: #788697;
+  color: whitesmoke;
+}
