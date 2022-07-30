@@ -51,7 +51,7 @@ function App() {
       <div className="header-bar">
         <h1>Listing Github Repos APP</h1>
       </div>
-      {displayPublicRepos}
+      <div className="flex-box">{displayPublicRepos}</div>
       <ReactPaginate
         forcePage={forcePage}
         breakLabel=".."
